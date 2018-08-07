@@ -32,6 +32,10 @@ pipeline {
                     def current = sh (script: 'date +%Y%m%d', returnStdout: true).trim()
                     HASH_TAG = "${current}.${GIT_COMMIT.substring(0,8)}-${JENKINS_VERSION}-${DOCKER_VERSION}"
                     BRANCH_TAG = "${BRANCH_NAME}" == "master" ? "latest" : "${BRANCH_NAME}".replaceAll(/[^a-zA-Z0-9\.\-\_]+/, "-")
+                    sh "echo ${JENKINS_VERSION}"
+                    sh "echo ${DOCKER_VERSION}"
+                    sh "echo ${HASH_TAG}"
+                    sh "echo ${BRANCH_TAG}"
                     sh "apk add --no-cache docker=${DOCKER_VERSION}"
                     sh "cat ${FOLDER}/.docker/plugins.base.txt ${FOLDER}/.docker/plugins.${MODE}.txt > ${FOLDER}/.docker/plugins.txt"
                 }
