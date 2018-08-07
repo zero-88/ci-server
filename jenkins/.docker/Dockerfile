@@ -8,7 +8,7 @@ COPY executors.groovy /usr/share/jenkins/ref/init.groovy.d/executors.groovy
 LABEL JENKINS_VERSION="$JENKINS_VERSION" DOCKER_VERSION="$DOCKER_VERSION"
 
 USER root
-RUN echo $DOCKER_VERSION && curl -o /tmp/docker.tgz "https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz" \
+RUN curl -o /tmp/docker.tgz "https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz" \
     && tar --strip-components=1 -xzvf /tmp/docker.tgz -C /usr/local/bin
 
 USER ${user}
