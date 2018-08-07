@@ -1,0 +1,68 @@
+library identifier: 'notifications@master', retriever: modernSCM(
+        [$class: 'GitSCMSource',
+         remote: 'https://github.com/zero-88/jenkins-pipeline-shared.git'])
+
+pipeline {
+    agent {
+        docker { 
+            image 'alpine:latest'
+            args '-v /var/run/docker.sock:/var/run/docker.sock:ro'
+        }
+    }
+    environment {
+        REPO = 'zero-jenkins'
+        PRIVATE_REPO = "${PRIVATE_DOCKER_REGISTRY}/${REPO}"
+        DOCKER_GITHUB = "https://api.github.com/repos/docker/docker-ce/releases/latest"
+    }
+    parameters {
+        string(defaultValue: "", description: 'Jenkins Version', name: 'JENKINS_INPUT_VERSION')
+        string(defaultValue: "", description: 'Docker Version', name: 'DOCKER_VERSION')
+        string(defaultValue: "aws", description: 'Mode', name: 'MODE')
+    }
+
+    stages {
+
+        stage("Prepare") {
+            steps {
+                script {
+                    DOCKER_VERSION = DOCKER_VERSION ?: sh(script: "curl --silent ${DOCKER_GITHUB} | grep '\"name\":' | sed -E 's/.*\"([^\"]+)\".*/\1/'", returnStdout: true).trim()
+                    JENKINS_VERSION = JENKINS_INPUT_VERSION ?: sh(script: "source .env && echo \$JENKINS_VERSION", returnStdout: true).trim()
+                    def current = sh (script: 'date +%Y%m%d', returnStdout: true).trim()
+                    HASH_TAG = "${current}.${GIT_COMMIT.substring(0,8)}-${JENKINS_VERSION}-${DOCKER_VERSION}"
+                    BRANCH_TAG = "${BRANCH_NAME}" == "master" ? "latest" : "${BRANCH_NAME}".replaceAll(/[^a-zA-Z0-9\.\-\_]+/, "-")
+                    sh "apk add --no-cache bash git docker=${DOCKER_VERSION}"
+                    sh "cat .docker/plugins.base.txt .docker/plugins.${MODE}.txt > .docker/plugins.txt"
+                }
+            }
+        }
+
+        stage("Build") {
+            steps {
+                script {
+                    sh "docker build -t ${PRIVATE_REPO}:${HASH_TAG} -f .docker/Dockerfile 
+                                    --build-arg \"JENKINS_VERSION=${JENKINS_VERSION}\" 
+                                    --build-arg \"DOCKER_VERSION=${DOCKER_VERSION}\" .docker/"
+                }
+            }
+        }
+
+        stage("Publish") {
+            steps {
+                script {
+                    docker.withRegistry("https://${env.PRIVATE_DOCKER_REGISTRY}", "${env.PRIVATE_DOCKER_CREDENTIALS}") {
+                        sh "docker tag  ${PRIVATE_REPO}:${HASH_TAG} ${PRIVATE_REPO}:${BRANCH_TAG}"
+                        sh "docker push ${PRIVATE_REPO}:${HASH_TAG}"
+                        sh "docker push ${PRIVATE_REPO}:${BRANCH_TAG}"
+                    }
+                }
+            }
+        }
+
+    }
+
+    post {
+        always {
+            emailNotifications VERSION
+        }
+    }
+}

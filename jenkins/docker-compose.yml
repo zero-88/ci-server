@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+
+  jenkins:
+    image: ${REGISTRY}${APP_NAME}:${JENKINS_VERSION}
+    container_name: jenkins
+    environment:
+      JAVA_OPTS: '-Xmx${MEMORY_SETTING}'
+      JENKINS_OPTS: '--handlerCountMax=300'
+      TRY_UPGRADE_IF_NO_MARKER: 'true'
+    ports:
+      - 8080:8080
+      - 50000:50000
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: on-failure
+    networks:
+      - jenkins-nw
+    logging:
+      driver: ${LOG_DRIVER}
+
+networks:
+  jenkins-nw:
+    external:
+      name: ${JENKINS_NETWORK}
+
+volumes:
+  jenkins-data:
+    external:
+      name: ${JENKINS_DATA}

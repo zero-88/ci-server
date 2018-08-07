@@ -1,0 +1,8 @@
+blueocean-bitbucket-pipeline
+cloudbees-bitbucket-branch-source
+github
+github-api
+github-branch-source
+gitlab-plugin
+pipeline-github-lib
+blueocean-github-pipeline

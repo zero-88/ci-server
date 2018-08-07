@@ -1,0 +1,3 @@
+amazon-ecr
+aws-credentials
+aws-java-sdk
