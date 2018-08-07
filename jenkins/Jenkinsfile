@@ -39,9 +39,9 @@ pipeline {
         stage("Build") {
             steps {
                 script {
-                    sh "docker build -t ${PRIVATE_REPO}:${HASH_TAG} -f .docker/Dockerfile 
-                                    --build-arg \"JENKINS_VERSION=${JENKINS_VERSION}\" 
-                                    --build-arg \"DOCKER_VERSION=${DOCKER_VERSION}\" .docker/"
+                    sh "docker build -t ${PRIVATE_REPO}:${HASH_TAG} -f .docker/Dockerfile \
+                                --build-arg \"JENKINS_VERSION=${JENKINS_VERSION}\" \
+                                --build-arg \"DOCKER_VERSION=${DOCKER_VERSION}\" .docker/"
                 }
             }
         }
