@@ -10,7 +10,7 @@ pipeline {
         }
     }
     environment {
-        REPO = 'zero-jenkins'
+        REPO = 'iojenkins'
         PRIVATE_REPO = "${PRIVATE_DOCKER_REGISTRY}/${REPO}"
         DOCKER_GITHUB = "https://api.github.com/repos/docker/docker-ce/releases/latest"
         FOLDER = "jenkins"
@@ -32,13 +32,10 @@ pipeline {
                     def current = sh (script: 'date +%Y%m%d', returnStdout: true).trim()
                     HASH_TAG = "${current}.${GIT_COMMIT.substring(0,8)}-${JENKINS_VERSION}-${DOCKER_VERSION}"
                     BRANCH_TAG = "${BRANCH_NAME}" == "master" ? "latest" : "${BRANCH_NAME}".replaceAll(/[^a-zA-Z0-9\.\-\_]+/, "-")
-                    sh "echo ${JENKINS_VERSION}"
-                    sh "echo ${DOCKER_VERSION}"
-                    sh "echo ${HASH_TAG}"
-                    sh "echo ${BRANCH_TAG}"
                     sh "curl -o /tmp/docker.tgz https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz \
                                 && tar --strip-components=1 -xzvf /tmp/docker.tgz -C /usr/local/bin"
                     sh "cat ${FOLDER}/.docker/plugins.base.txt ${FOLDER}/.docker/plugins.${MODE}.txt > ${FOLDER}/.docker/plugins.txt"
+                    DOCKERFILE = JENKINS_VERSION.contains("alpine") ? "alpine.Dockerfile" : "Dockerfile"
                 }
             }
         }
@@ -46,7 +43,7 @@ pipeline {
         stage("Build") {
             steps {
                 script {
-                    sh "docker build -t ${PRIVATE_REPO}:${HASH_TAG} -f ${FOLDER}/.docker/Dockerfile \
+                    sh "docker build -t ${PRIVATE_REPO}:${HASH_TAG} -f ${FOLDER}/.docker/${DOCKERFILE} \
                                 --build-arg \"JENKINS_VERSION=${JENKINS_VERSION}\" \
                                 --build-arg \"DOCKER_VERSION=${DOCKER_VERSION}\" ${FOLDER}/.docker/"
                 }
