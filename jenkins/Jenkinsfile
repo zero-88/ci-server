@@ -26,7 +26,7 @@ pipeline {
         stage("Prepare") {
             steps {
                 script {
-                    sh "apk add --no-cache bash curl"
+                    sh "apk add --no-cache bash git curl tar"
                     DOCKER_VERSION = DOCKER_VERSION ?: sh(script: "curl --silent ${DOCKER_GITHUB} | grep '\"name\":' | sed -E 's/.*\"([^\"]+)\".*/\\1/'", returnStdout: true).trim()
                     JENKINS_VERSION = JENKINS_INPUT_VERSION ?: sh(script: "source ${FOLDER}/.env && echo \$JENKINS_VERSION", returnStdout: true).trim()
                     def current = sh (script: 'date +%Y%m%d', returnStdout: true).trim()
