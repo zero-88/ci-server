@@ -36,7 +36,8 @@ pipeline {
                     sh "echo ${DOCKER_VERSION}"
                     sh "echo ${HASH_TAG}"
                     sh "echo ${BRANCH_TAG}"
-                    sh "apk add --no-cache docker=${DOCKER_VERSION}"
+                    sh "curl -o /tmp/docker.tgz https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz \
+                                && tar --strip-components=1 -xzvf /tmp/docker.tgz -C /usr/local/bin"
                     sh "cat ${FOLDER}/.docker/plugins.base.txt ${FOLDER}/.docker/plugins.${MODE}.txt > ${FOLDER}/.docker/plugins.txt"
                 }
             }
@@ -68,7 +69,7 @@ pipeline {
 
     post {
         always {
-            emailNotifications VERSION
+            emailNotifications HASH_TAG
         }
     }
 }
