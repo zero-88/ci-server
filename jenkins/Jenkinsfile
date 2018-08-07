@@ -27,7 +27,7 @@ pipeline {
             steps {
                 script {
                     sh "apk add --no-cache bash curl"
-                    DOCKER_VERSION = DOCKER_VERSION ?: sh(script: "curl --silent ${DOCKER_GITHUB} | grep -Po '\"name\": \"\\K.*?(?=\")', returnStdout: true).trim()
+                    DOCKER_VERSION = DOCKER_VERSION ?: sh(script: "curl --silent ${DOCKER_GITHUB} | grep -Po '\"name\": \"\\K.*?(?=\")'", returnStdout: true).trim()
                     JENKINS_VERSION = JENKINS_INPUT_VERSION ?: sh(script: "source ${FOLDER}/.env && echo \$JENKINS_VERSION", returnStdout: true).trim()
                     def current = sh (script: 'date +%Y%m%d', returnStdout: true).trim()
                     HASH_TAG = "${current}.${GIT_COMMIT.substring(0,8)}-${JENKINS_VERSION}-${DOCKER_VERSION}"
