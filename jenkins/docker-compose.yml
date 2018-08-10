@@ -3,7 +3,7 @@ version: '3'
 services:
 
   jenkins:
-    image: ${REGISTRY}${APP_NAME}:${JENKINS_VERSION}
+    image: ${JENKINS_IMAGE}
     container_name: jenkins
     environment:
       JAVA_OPTS: '-Xmx${MEMORY_SETTING}'

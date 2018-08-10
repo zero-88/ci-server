@@ -24,7 +24,6 @@ source .env
 
 function init_network {
     docker network inspect $JENKINS_NETWORK >/dev/null 2>&1 || docker network create $JENKINS_NETWORK
-    (cd ../infra && ./update-network.sh $JENKINS_NETWORK)
 }
 
 function init_volume {
