@@ -67,9 +67,8 @@ pipeline {
                 script {
                     sh "mkdir -p ${FOLDER}/dist"
                     sh "cp -rf ${FOLDER}/docker-compose* ${FOLDER}/fluent.aws.conf ${FOLDER}/jenkins.sh ${FOLDER}/.env ${FOLDER}/.prod.env ${FOLDER}/dist"
-                    sh "chmod +x ${FOLDER}/dist/jenkins.sh"
                     sh "sed -i -e \"s/^VERSION=/VERSION=${HASH_TAG}/g\" -e \"s#^REGISTRY=#REGISTRY=${PRIVATE_DOCKER_REGISTRY}/#g\" -e \"s/^APP_NAME=/APP_NAME=${REPO}/g\" ${FOLDER}/dist/.env"
-                    sh "curl -i -o ${FOLDER}/dist/docker-join-network.sh https://gist.githubusercontent.com/zero-88/ca37f7adeaeee13fabc7591aad4ba2f3/raw/4d6d2b1d309cef831aa59b759dad7a7973e1eb9d/docker-join-network.sh"
+                    downloadScripts "${FOLDER}/dist"
                 }
             }
             post {
