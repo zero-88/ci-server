@@ -3,6 +3,8 @@ cloudbees-bitbucket-branch-source
 github
 github-api
 github-branch-source
+github-pullrequest
 gitlab-plugin
 pipeline-github-lib
 blueocean-github-pipeline
+embeddable-build-status

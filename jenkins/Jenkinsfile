@@ -1,4 +1,4 @@
-library identifier: 'notifications@master', retriever: modernSCM(
+library identifier: 'shared@master', retriever: modernSCM(
         [$class: 'GitSCMSource',
          remote: 'https://github.com/zero-88/jenkins-pipeline-shared.git'])
 
