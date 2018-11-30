@@ -67,7 +67,7 @@ pipeline {
                 script {
                     sh "mkdir -p ${FOLDER}/dist"
                     sh "cp -rf ${FOLDER}/docker-compose* ${FOLDER}/fluent.aws.conf ${FOLDER}/jenkins.sh ${FOLDER}/.env ${FOLDER}/.prod.env ${FOLDER}/dist"
-                    sh "sed -i -e \"s/^VERSION=/VERSION=${HASH_TAG}/g\" -e \"s#^REGISTRY=#REGISTRY=${PRIVATE_DOCKER_REGISTRY}/#g\" -e \"s/^APP_NAME=/APP_NAME=${REPO}/g\" ${FOLDER}/dist/.env"
+                    sh "sed -i -e \"s/^VERSION=/VERSION=${HASH_TAG}/g\" -e \"s#^REGISTRY=#REGISTRY=${PRIVATE_DOCKER_REGISTRY}/#g\" -e \"s/^APP_NAME=.*/APP_NAME=${REPO}/g\" ${FOLDER}/dist/.env"
                     downloadScripts "${FOLDER}/dist"
                 }
             }
