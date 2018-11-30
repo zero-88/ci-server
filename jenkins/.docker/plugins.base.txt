@@ -13,7 +13,6 @@ blueocean-display-url
 blueocean-events
 blueocean-git-pipeline
 blueocean-i18n
-blueocean-jira
 blueocean-jwt
 blueocean-personalization
 blueocean-pipeline-api-impl
@@ -58,7 +57,6 @@ jackson2-api
 javadoc
 jenkins-design-language
 jenkins-multijob-plugin
-jira
 jquery
 jquery-detached
 jsch
@@ -97,7 +95,7 @@ robot
 role-strategy
 run-condition
 scm-api
-script-security
+script-security:1.48
 seleniumhtmlreport
 sse-gateway
 ssh
